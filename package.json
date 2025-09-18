@@ -1,0 +1,23 @@
+{
+  "name": "micro-cap-trader",
+  "version": "1.0.0",
+  "description": "AI-powered micro-cap trading platform on Cloudflare Workers",
+  "type": "module",
+  "main": "src/worker.js",
+  "scripts": {
+    "dev": "wrangler dev --local",
+    "deploy": "wrangler deploy",
+    "db:create": "wrangler d1 create trading-platform",
+    "db:init": "wrangler d1 execute trading-platform --file=./schema.sql",
+    "db:init-local": "wrangler d1 execute trading-platform --local --file=./schema.sql",
+    "db:query": "wrangler d1 execute trading-platform --command",
+    "db:query-local": "wrangler d1 execute trading-platform --local --command"
+  },
+  "devDependencies": {
+    "wrangler": "^4.37.1"
+  },
+  "dependencies": {
+    "@hono/node-server": "^1.19.3",
+    "hono": "^4.6.15"
+  }
+}
