@@ -8,118 +8,432 @@ export function Layout({ title, children }) {
         <script src="https://unpkg.com/htmx.org@2.0.2"></script>
         <style>{`
           * { margin: 0; padding: 0; box-sizing: border-box; }
+
           body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f8fafc;
             min-height: 100vh;
-            color: #333;
+            color: #1a202c;
+            line-height: 1.6;
           }
-          .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
+
+          .app-layout {
+            display: flex;
+            min-height: 100vh;
           }
-          .header {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 30px;
-            margin-bottom: 30px;
-            text-align: center;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+
+          .sidebar {
+            width: 280px;
+            background: #2d3748;
+            color: white;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
           }
-          .header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+
+          .sidebar-header {
+            padding: 24px 20px;
+            border-bottom: 1px solid #4a5568;
           }
-          .header p {
-            color: #666;
-            font-size: 1.1rem;
-          }
-          .card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 30px;
-            margin-bottom: 30px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-          }
-          .card h2 {
-            margin-bottom: 20px;
-            color: #333;
+
+          .sidebar-header h1 {
             font-size: 1.5rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 4px;
           }
-          .grid {
+
+          .sidebar-header p {
+            font-size: 0.875rem;
+            color: #a0aec0;
+          }
+
+          .sidebar-nav {
+            padding: 16px 0;
+          }
+
+          .nav-section {
+            margin-bottom: 32px;
+          }
+
+          .nav-section-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #a0aec0;
+            padding: 0 20px 8px;
+          }
+
+          .nav-item {
+            display: block;
+            padding: 12px 20px;
+            color: #e2e8f0;
+            text-decoration: none;
+            transition: all 0.2s;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            font-size: 0.875rem;
+          }
+
+          .nav-item:hover, .nav-item.active {
+            background: #4a5568;
+            color: #ffffff;
+            border-right: 3px solid #667eea;
+          }
+
+          .nav-item-icon {
+            display: inline-block;
+            width: 20px;
+            margin-right: 12px;
+            text-align: center;
+          }
+
+          .main-content {
+            flex: 1;
+            margin-left: 280px;
+            min-height: 100vh;
+          }
+
+          .top-bar {
+            background: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 16px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+          }
+
+          .page-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #2d3748;
+          }
+
+          .content-area {
+            padding: 32px;
+            max-width: none;
+          }
+
+          .content-section {
+            margin-bottom: 32px;
+          }
+
+          .dashboard-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
           }
+
+          .dashboard-grid-wide {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+            margin-bottom: 32px;
+          }
+
+          .card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.2s;
+          }
+
+          .card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+          }
+
+          .card h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+          }
+
           .btn {
-            background: linear-gradient(45deg, #667eea, #764ba2);
+            background: #667eea;
             color: white;
             border: none;
-            border-radius: 12px;
-            padding: 12px 24px;
-            font-size: 1rem;
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
           }
+
           .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+            background: #5a67d8;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
           }
-          .btn-success { background: linear-gradient(45deg, #56ab2f, #a8e6cf); }
-          .btn-danger { background: linear-gradient(45deg, #ff416c, #ff4b2b); }
+
+          .btn-success {
+            background: #48bb78;
+          }
+
+          .btn-success:hover {
+            background: #38a169;
+            box-shadow: 0 4px 12px rgba(72, 187, 120, 0.4);
+          }
+
+          .btn-danger {
+            background: #f56565;
+          }
+
+          .btn-danger:hover {
+            background: #e53e3e;
+            box-shadow: 0 4px 12px rgba(245, 101, 101, 0.4);
+          }
+
           .input {
             width: 100%;
-            padding: 12px;
-            border: 2px solid #e1e5e9;
-            border-radius: 12px;
-            font-size: 1rem;
-            margin-bottom: 15px;
-            transition: border-color 0.3s;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            margin-bottom: 16px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            background: #ffffff;
           }
+
           .input:focus {
             outline: none;
             border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
           }
-          .cash { font-size: 2rem; font-weight: bold; color: #27ae60; }
+
           .position {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 10px;
-            margin-bottom: 10px;
+            padding: 16px;
+            background: #f7fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            transition: background-color 0.2s;
           }
-          .positive { color: #27ae60; }
-          .negative { color: #e74c3c; }
-          .error {
-            background: #fff5f5;
-            color: #e53e3e;
-            padding: 15px;
-            border-radius: 10px;
-            border-left: 4px solid #e53e3e;
-            margin-bottom: 20px;
+
+          .position:hover {
+            background: #edf2f7;
           }
-          .success {
-            background: #f0fff4;
+
+          .cash {
+            font-size: 2rem;
+            font-weight: 700;
             color: #38a169;
-            padding: 15px;
-            border-radius: 10px;
+          }
+
+          .positive {
+            color: #38a169;
+            font-weight: 600;
+          }
+
+          .negative {
+            color: #e53e3e;
+            font-weight: 600;
+          }
+
+          .neutral {
+            color: #718096;
+          }
+
+          .error {
+            background: #fed7d7;
+            color: #c53030;
+            padding: 16px;
+            border-radius: 8px;
+            border-left: 4px solid #e53e3e;
+            margin-bottom: 16px;
+            font-size: 0.875rem;
+          }
+
+          .success {
+            background: #c6f6d5;
+            color: #2f855a;
+            padding: 16px;
+            border-radius: 8px;
             border-left: 4px solid #38a169;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
+            font-size: 0.875rem;
+          }
+
+          .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+          }
+
+          .stat-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+          }
+
+          .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 4px;
+          }
+
+          .stat-label {
+            font-size: 0.875rem;
+            color: #718096;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+          }
+
+          @media (max-width: 768px) {
+            .sidebar {
+              transform: translateX(-100%);
+              transition: transform 0.3s;
+            }
+
+            .sidebar.open {
+              transform: translateX(0);
+            }
+
+            .main-content {
+              margin-left: 0;
+            }
+
+            .dashboard-grid {
+              grid-template-columns: 1fr;
+            }
           }
         `}</style>
       </head>
       <body>
-        <div class="container">
-          {children}
+        <div class="app-layout">
+          <nav class="sidebar">
+            <div class="sidebar-header">
+              <h1>Micro Cap Trader</h1>
+              <p>AI-Powered Trading Platform</p>
+            </div>
+            <div class="sidebar-nav">
+              <div class="nav-section">
+                <div class="nav-section-title">Portfolio</div>
+                <button class="nav-item active" onclick="showSection('dashboard')">
+                  <span class="nav-item-icon">📊</span>
+                  Dashboard
+                </button>
+                <button class="nav-item" onclick="showSection('portfolio')">
+                  <span class="nav-item-icon">💰</span>
+                  Holdings
+                </button>
+                <button class="nav-item" onclick="showSection('trading')">
+                  <span class="nav-item-icon">🔄</span>
+                  Trading
+                </button>
+              </div>
+              <div class="nav-section">
+                <div class="nav-section-title">Research</div>
+                <button class="nav-item" onclick="showSection('analysis')">
+                  <span class="nav-item-icon">📈</span>
+                  Stock Analysis
+                </button>
+                <button class="nav-item" onclick="showSection('search')">
+                  <span class="nav-item-icon">🔍</span>
+                  Stock Search
+                </button>
+                <button class="nav-item" onclick="showSection('picks')">
+                  <span class="nav-item-icon">🌟</span>
+                  Top Picks
+                </button>
+              </div>
+              <div class="nav-section">
+                <div class="nav-section-title">Tools</div>
+                <button class="nav-item" onclick="showSection('quotes')">
+                  <span class="nav-item-icon">💹</span>
+                  Quick Quote
+                </button>
+              </div>
+            </div>
+          </nav>
+
+          <main class="main-content">
+            <header class="top-bar">
+              <h1 class="page-title" id="page-title">Dashboard</h1>
+              <div>
+                <span style="font-size: 0.875rem; color: #718096;">
+                  Last updated: <span id="last-updated"></span>
+                </span>
+              </div>
+            </header>
+            <div class="content-area">
+              {children}
+            </div>
+          </main>
         </div>
+
+        <script dangerouslySetInnerHTML={{__html: `
+          // Update last updated time
+          document.getElementById('last-updated').textContent = new Date().toLocaleTimeString();
+
+          // Navigation functionality
+          function showSection(sectionId) {
+            // Remove active class from all nav items
+            document.querySelectorAll('.nav-item').forEach(item => {
+              item.classList.remove('active');
+            });
+
+            // Add active class to clicked item
+            event.target.classList.add('active');
+
+            // Update page title
+            const titles = {
+              dashboard: 'Dashboard',
+              portfolio: 'Portfolio Holdings',
+              trading: 'Trading',
+              analysis: 'Stock Analysis',
+              search: 'Stock Search',
+              picks: 'Top Picks',
+              quotes: 'Quick Quote'
+            };
+
+            document.getElementById('page-title').textContent = titles[sectionId] || 'Dashboard';
+
+            // Hide all sections
+            document.querySelectorAll('.content-section').forEach(section => {
+              section.style.display = 'none';
+            });
+
+            // Show selected section
+            const targetSection = document.getElementById(sectionId + '-section');
+            if (targetSection) {
+              targetSection.style.display = 'block';
+            }
+          }
+
+          // Initialize on page load
+          document.addEventListener('DOMContentLoaded', function() {
+            // Show dashboard by default
+            showSection('dashboard');
+          });
+        `}} />
       </body>
     </html>
   );

@@ -21,7 +21,10 @@ health.get('/', (c) => {
         quotes: 'POST /api/stocks/quotes',
         search: 'GET /api/stocks/search?q=query',
         history: 'GET /api/stocks/history/:symbol',
-        quoteHtml: 'GET /api/stocks/quote-html'
+        quoteHtml: 'GET /api/stocks/quote-html',
+        analyze: 'GET /api/stocks/analyze/:symbol',
+        analyzeHtml: 'GET /api/stocks/analyze-html?symbol=AAPL',
+        topPicks: 'GET /api/stocks/top-picks'
       },
       trades: {
         buy: 'POST /api/trades/buy',
