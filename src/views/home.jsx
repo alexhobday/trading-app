@@ -58,7 +58,18 @@ export function HomePage(portfolioData) {
 
       {/* Top Picks Section */}
       <div id="picks-section" class="content-section" style="display: none;">
-        <TopPicks />
+        <div class="card">
+          <h2>🌟 Top Small Cap Picks</h2>
+          <p style="margin-bottom: 20px; color: #666;">
+            AI-powered analysis of trending small & micro-cap stocks with buy/sell recommendations
+          </p>
+          <p style="color: #666; font-style: italic;">
+            Top picks are automatically loaded on the Dashboard. Click the Dashboard tab to view the latest AI-powered recommendations.
+          </p>
+          <button onclick="showSection('dashboard')" class="btn" style="margin-top: 16px;">
+            View Dashboard
+          </button>
+        </div>
       </div>
 
       {/* Quick Quote Section */}

@@ -1,17 +1,20 @@
 export function StockAnalysis() {
   return (
     <div class="card">
-      <h2>📊 Stock Analysis & Tips</h2>
+      <h2>🧠 AI-Powered Stock Analysis</h2>
+      <p style="margin-bottom: 20px; color: #666; font-size: 0.9rem;">
+        Get comprehensive analysis of small & micro-cap stocks with AI-powered insights, technical indicators, and trading recommendations.
+      </p>
       <form hx-get="/api/stocks/analyze-html" hx-target="#analysis-result" hx-trigger="submit">
         <input
           type="text"
           name="symbol"
-          placeholder="Stock Symbol (e.g., AAPL)"
+          placeholder="Stock Symbol (e.g., SOFI, PLTR, UPST)"
           class="input"
           required
           style="text-transform: uppercase;"
         />
-        <button type="submit" class="btn">Analyze Stock</button>
+        <button type="submit" class="btn">🔍 Analyze with AI</button>
       </form>
       <div id="analysis-result"></div>
     </div>
@@ -21,9 +24,9 @@ export function StockAnalysis() {
 export function TopPicks() {
   return (
     <div class="card">
-      <h2>🌟 Top Stock Picks</h2>
+      <h2>🌟 Top Small Cap Picks</h2>
       <p style="margin-bottom: 20px; color: #666;">
-        AI-powered analysis of trending stocks with buy/sell recommendations
+        AI-powered analysis of trending small & micro-cap stocks with buy/sell recommendations
       </p>
       <button
         hx-get="/api/stocks/top-picks"
@@ -78,7 +81,7 @@ export function TopPicks() {
                                 \${pick.name}
                               </div>
                               <div style="font-size: 0.8rem; color: #888; margin-top: 4px;">
-                                \${pick.recommendation.reason}
+                                \${pick.recommendation.reasoning || pick.recommendation.reason || (pick.aiInsights ? pick.aiInsights.summary : 'Technical analysis-based recommendation')}
                               </div>
                             </div>
                             <div style="text-align: right;">

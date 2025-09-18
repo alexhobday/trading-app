@@ -1,6 +1,9 @@
+import { AIAnalysisService } from './AIAnalysisService.js';
+
 export class StockAnalysisService {
-  constructor(stockService) {
+  constructor(stockService, openaiApiKey = null) {
     this.stockService = stockService;
+    this.aiService = new AIAnalysisService(openaiApiKey);
   }
 
   // Calculate technical indicators
@@ -48,11 +51,11 @@ export class StockAnalysisService {
     return Math.sqrt(variance) * Math.sqrt(252); // Annualized volatility
   }
 
-  // Generate stock analysis and tips
+  // Generate AI-powered stock analysis and tips for small caps
   async analyzeStock(symbol) {
     try {
       const quote = await this.stockService.getQuote(symbol);
-      const historicalData = await this.stockService.getHistoricalData(symbol, 30);
+      const historicalData = await this.stockService.getHistoricalData(symbol, 60); // Get more data for better AI analysis
 
       if (!historicalData || historicalData.length < 20) {
         throw new Error('Insufficient historical data for analysis');
@@ -73,7 +76,7 @@ export class StockAnalysisService {
       const currentVolume = quote.volume;
       const changePercent = quote.changePercent;
 
-      // Generate signals and tips
+      // Generate traditional signals and tips
       const signals = this.generateSignals({
         currentPrice,
         sma20,
@@ -93,6 +96,9 @@ export class StockAnalysisService {
         volatility
       });
 
+      // Get AI-powered analysis
+      const aiAnalysis = await this.aiService.analyzeStockWithAI(quote, historicalData);
+
       return {
         symbol: quote.symbol,
         name: quote.name,
@@ -107,7 +113,9 @@ export class StockAnalysisService {
         },
         signals,
         tips,
-        recommendation: this.getOverallRecommendation(signals),
+        recommendation: aiAnalysis.recommendation || this.getOverallRecommendation(signals),
+        aiInsights: aiAnalysis.aiInsights,
+        trading: aiAnalysis.trading,
         timestamp: new Date().toISOString()
       };
     } catch (error) {
@@ -239,12 +247,24 @@ export class StockAnalysisService {
     }
   }
 
-  // Get top performing stocks from a watchlist
-  async getTopPicks(symbols = ['AAPL', 'GOOGL', 'MSFT', 'TSLA', 'NVDA', 'AMD', 'META', 'NFLX']) {
+  // Get top performing small/micro cap stocks from a watchlist
+  async getTopPicks(symbols = null) {
+    if (!symbols) {
+      symbols = this.aiService.getSmallCapWatchlist();
+    }
     try {
-      const analyses = await Promise.allSettled(
-        symbols.map(symbol => this.analyzeStock(symbol))
-      );
+      // Add delays between API calls to avoid rate limiting
+      const analyses = [];
+      for (let i = 0; i < Math.min(symbols.length, 5); i++) {
+        try {
+          const analysis = await this.analyzeStock(symbols[i]);
+          analyses.push({ status: 'fulfilled', value: analysis });
+        } catch (error) {
+          analyses.push({ status: 'rejected', reason: error });
+        }
+        // Longer delay between calls to avoid rate limiting
+        if (i < 4) await new Promise(resolve => setTimeout(resolve, 1000));
+      }
 
       const validAnalyses = analyses
         .filter(result => result.status === 'fulfilled')

@@ -129,7 +129,7 @@ stocks.get('/analyze/:symbol', async (c) => {
 
   try {
     const stockService = new StockService();
-    const analysisService = new StockAnalysisService(stockService);
+    const analysisService = new StockAnalysisService(stockService, c.env.OPENAI_API_KEY);
 
     const analysis = await analysisService.analyzeStock(symbol);
     return c.json(analysis);
@@ -145,7 +145,7 @@ stocks.get('/analyze/:symbol', async (c) => {
 stocks.get('/top-picks', async (c) => {
   try {
     const stockService = new StockService();
-    const analysisService = new StockAnalysisService(stockService);
+    const analysisService = new StockAnalysisService(stockService, c.env.OPENAI_API_KEY);
 
     const topPicks = await analysisService.getTopPicks();
     return c.json({
@@ -171,7 +171,7 @@ stocks.get('/analyze-html', async (c) => {
 
   try {
     const stockService = new StockService();
-    const analysisService = new StockAnalysisService(stockService);
+    const analysisService = new StockAnalysisService(stockService, c.env.OPENAI_API_KEY);
     const analysis = await analysisService.analyzeStock(symbol);
 
     const signalsHtml = analysis.signals.map(signal => {
